@@ -39,13 +39,37 @@ export default function Home() {
       setAccount(info.account);
       setChainId(info.chainId);
       setChainName(info.chainName);
+
+      if (info.chainId != 11155111) {
+        try {
+          await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: "0xaa36a7" }],
+          });
+        } catch (switchError : any) {
+          if (switchError.code === 4902) {
+            await window.ethereum.request({
+              method: "wallet_addEthereumChain",
+              params: [{
+                chainId: "0xaa36a7",
+                chainName: "Sepolia Test Network",
+                nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+                rpcUrls: ["https://sepolia.infura.io/v3/"],
+                blockExplorerUrls: ["https://sepolia.etherscan.io"]
+              }]
+            });
+          }
+        }
+      }
       const [b, o] = await Promise.all([readContractBalance(), readOwner()]);
       setBalanceEth(b);
       setOwner(o);
     } catch (e) {
       // 무시: 초기 로드에서 지갑이 없어도 됨
     }
+    
   }
+  
 
   async function onConnect() {
     setLoading(true);
