@@ -43,20 +43,22 @@ export default function Home() {
       if (info.chainId != 11155111) {
         try {
           await window.ethereum.request({
-            method: "wallet_switchEthereumChain",
-            params: [{ chainId: "0xaa36a7" }],
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0xaa36a7' }],
           });
-        } catch (switchError : any) {
+        } catch (switchError: any) {
           if (switchError.code === 4902) {
             await window.ethereum.request({
-              method: "wallet_addEthereumChain",
-              params: [{
-                chainId: "0xaa36a7",
-                chainName: "Sepolia Test Network",
-                nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
-                rpcUrls: ["https://sepolia.infura.io/v3/"],
-                blockExplorerUrls: ["https://sepolia.etherscan.io"]
-              }]
+              method: 'wallet_addEthereumChain',
+              params: [
+                {
+                  chainId: '0xaa36a7',
+                  chainName: 'Sepolia Test Network',
+                  nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+                  rpcUrls: ['https://sepolia.infura.io/v3/'],
+                  blockExplorerUrls: ['https://sepolia.etherscan.io'],
+                },
+              ],
             });
           }
         }
@@ -67,9 +69,7 @@ export default function Home() {
     } catch (e) {
       // 무시: 초기 로드에서 지갑이 없어도 됨
     }
-    
   }
-  
 
   async function onConnect() {
     setLoading(true);
@@ -125,7 +125,10 @@ export default function Home() {
   return (
     <div className="font-sans min-h-screen p-8 sm:p-20 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Tip Jar</h1>
-
+      <h2 className="text-xl text-gray-500 dark:text-gray-400 mt-1">
+        92212893 | 안서진
+      </h2>{' '}
+      <br></br>
       <section className="mb-6 p-4 border rounded-md">
         <div className="flex items-center justify-between gap-4">
           <div>
@@ -146,17 +149,14 @@ export default function Home() {
           네트워크: {chainName ?? '-'} ({chainId ?? '-'})
         </div>
       </section>
-
       <section className="mb-6 p-4 border rounded-md">
         <div className="text-sm text-gray-500">컨트랙트 잔액 (ETH)</div>
         <div className="text-xl font-semibold">{balanceEth}</div>
       </section>
-
       <section className="mb-6 p-4 border rounded-md">
         <div className="text-sm text-gray-500">오너</div>
         <div className="font-mono break-all">{owner || '-'}</div>
       </section>
-
       <section className="mb-6 p-4 border rounded-md">
         <div className="mb-3">
           <label className="block text-sm text-gray-500 mb-1">
@@ -188,7 +188,6 @@ export default function Home() {
           )}
         </div>
       </section>
-
       {message && (
         <div className="mt-4 p-3 border rounded-md bg-gray-50 text-sm break-all">
           {message}
