@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## ♦️컨트랙트 배포 (Sepolia)
+- Compile
+- Deploy & Run
+- Environment: Injected Provider (MetaMask)
+- Network: Sepolia
+- Deploy 클릭 → Confirm
+- 배포 후 Contract Address 복사
+- /src/lib/constants.ts 경로의 ```contractAddress```에 붙여넣기
 
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.13;
+contract TipJar {
+  address public owner;
+  event TipReceived(address indexed tipper, uint256 amount);
+  event TipWithdrawn(address indexed owner, uint256 amount);
+  constructor() {
+    owner = msg.sender;
+  }
+  modifier onlyOwner() {
+    require(msg.sender == owner, "Only the owner can call this function.");
+    _;
+  }
+  function tip() public payable {
+    require(msg.value > 0, "You must send a tip to use this function.");
+    emit TipReceived(msg.sender, msg.value);
+  }
+  function withdrawTips() public onlyOwner {
+    uint256 contractBalance = address(this).balance;
+    require(contractBalance > 0, "There are no tips to withdraw.");
+    payable(owner).transfer(contractBalance);
+    emit TipWithdrawn(owner, contractBalance);
+  }
+  function getBalance() public view returns (uint256) {
+    return address(this).balance;
+  }
+}
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
