@@ -35,5 +35,4 @@ contract TipJar {
     return address(this).balance;
   }
 }
-
 ```
